@@ -110,6 +110,10 @@ echo 'ECS_CLUSTER=${aws_ecs_cluster.main.name}' >> /etc/ecs/ecs.config
 
 # Disable privileged containers.
 echo 'ECS_DISABLE_PRIVILEGED=true' >> /etc/ecs/ecs.config
+
+# Install Docker volume plugins
+docker plugin install rexray/ebs
+docker plugin install rexray/s3fs
 EOF
 
 
