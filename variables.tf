@@ -3,6 +3,10 @@ variable "name" {
   type        = string
 }
 
+variable "cluster_name" {
+  type = string
+}
+
 variable "environment" {
   description = "Environment tag."
   type        = string

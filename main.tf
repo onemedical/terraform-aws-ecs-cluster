@@ -3,7 +3,7 @@
 #
 
 data "aws_ecs_cluster" "main" {
-  cluster_name = "${var.name}"
+  cluster_name = "${var.cluster_name}"
 }
 
 #
