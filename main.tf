@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "ecs_instance_assume_role_policy" {
 }
 
 resource "aws_iam_role" "ecs_instance_role" {
-  name               = "ecs-instance-role-${local.cluster_name}"
+  name               = "ecs-instance-role-${var.cluster_name}"
   assume_role_policy = data.aws_iam_policy_document.ecs_instance_assume_role_policy.json
 }
 
@@ -37,7 +37,7 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_policy" {
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
-  name = "ecsInstanceRole-${local.cluster_name}"
+  name = "ecsInstanceRole-${var.cluster_name}"
   path = "/"
   role = aws_iam_role.ecs_instance_role.name
 }
@@ -47,8 +47,8 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
 #
 
 resource "aws_security_group" "main" {
-  name        = "asg-ec2-${local.cluster_name}"
-  description = "${local.cluster_name} ASG security group"
+  name        = "asg-ec2-${var.cluster_name}"
+  description = "${var.cluster_name} ASG security group"
   vpc_id      = var.vpc_id
 
   tags = {
@@ -73,7 +73,7 @@ resource "aws_security_group_rule" "main" {
 #
 
 resource "aws_launch_configuration" "main" {
-  name_prefix = format("ecs-%s-", local.cluster_name)
+  name_prefix = format("ecs-%s-", var.cluster_name)
 
   iam_instance_profile = aws_iam_instance_profile.ecs_instance_profile.name
 
@@ -104,7 +104,7 @@ EOF
 }
 
 resource "aws_autoscaling_group" "main" {
-  name = "ecs-${local.cluster_name}"
+  name = "ecs-${var.cluster_name}"
 
   launch_configuration = aws_launch_configuration.main.id
   termination_policies = ["OldestLaunchConfiguration", "Default"]
@@ -120,13 +120,13 @@ resource "aws_autoscaling_group" "main" {
 
   tag {
     key                 = "Name"
-    value               = "ecs-${local.cluster_name}"
+    value               = "ecs-${var.cluster_name}"
     propagate_at_launch = true
   }
 
   tag {
     key                 = "Cluster"
-    value               = local.cluster_name
+    value               = var.cluster_name
     propagate_at_launch = true
   }
 
