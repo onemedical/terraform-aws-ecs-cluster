@@ -1,13 +1,9 @@
-locals {
-  cluster_name = "${var.name}-${var.environment}"
-}
-
 #
 # ECS
 #
 
 data "aws_ecs_cluster" "main" {
-  cluster_name = "${local.cluster_name}"
+  cluster_name = "${var.name}"
 }
 
 #
